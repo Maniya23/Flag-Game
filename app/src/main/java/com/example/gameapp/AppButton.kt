@@ -16,6 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+// Create an Button function
 @Composable
 fun AppButton(label: String, onClick: () -> Unit, enabled: Boolean, modifier: Modifier) {
     Button(

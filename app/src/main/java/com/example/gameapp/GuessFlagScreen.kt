@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,6 +18,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -35,23 +37,32 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun GuessFlagScreen(
     modifier: Modifier = Modifier,
-    countries: List<Country>
+    countries: List<Country>,
+    isChecked: Boolean,
 ) {
+
+    // Store the selected flag by the user
     var chosenCountry by remember { mutableStateOf<Country?>(null) }
 
+    // generate 3 random countries
     var randomCountry by remember { mutableStateOf(countries.random()) }
     var randomCountry1 by remember { mutableStateOf(countries.random()) }
     var randomCountry2 by remember { mutableStateOf(countries.random()) }
 
+    // Store context and access flags of each country
     val context = LocalContext.current
-    var randomCountryFlag = painterResource(id = getFlagResourceId(randomCountry.code, context))
-    var randomCountryFlag1 = painterResource(id = getFlagResourceId(randomCountry1.code, context))
-    var randomCountryFlag2 = painterResource(id = getFlagResourceId(randomCountry2.code, context))
+    val randomCountryFlag = painterResource(id = getFlagResourceId(randomCountry.code, context))
+    val randomCountryFlag1 = painterResource(id = getFlagResourceId(randomCountry1.code, context))
+    val randomCountryFlag2 = painterResource(id = getFlagResourceId(randomCountry2.code, context))
 
+    // Store alert states
     var showNext by remember { mutableStateOf(false) }
     var showSuccessAlert by remember { mutableStateOf(false) }
     var showErrorAlert by remember { mutableStateOf(false) }
 
+    var time by remember { mutableLongStateOf(10) }
+
+    // Submit function
     fun handleSubmit() {
         if (chosenCountry == randomCountry) {
             showSuccessAlert = true;
@@ -62,6 +73,7 @@ fun GuessFlagScreen(
         }
     }
 
+    //Start of display
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -79,6 +91,28 @@ fun GuessFlagScreen(
             )
         }
         Spacer(modifier = Modifier.height(20.dp))
+
+        Row {
+            if (isChecked){
+                Text(text = "Time remaining : $time s")
+
+//                // referred from Kotlin Documentation & GeeksforGeeks referenced at the end
+//                object : CountDownTimer(10000, 1000) {
+//
+//                    override fun onTick(millisUntilFinished: Long) {
+//                        time = millisUntilFinished;
+//                        time/=1000;
+//                    }
+//
+//
+//                    override fun onFinish() {
+//                        showErrorAlert = true;
+//                        showNext = true;
+//                    }
+//                }.start()
+            }
+        }
+        // 3 images
         Column (modifier = Modifier
             .fillMaxWidth(),
             verticalArrangement = Arrangement.Center,
@@ -110,6 +144,7 @@ fun GuessFlagScreen(
                     .height(160.dp),
             )
 
+            // country name
             Spacer(modifier = Modifier.height(50.dp));
             Text(
                 text = randomCountry.name,
@@ -136,6 +171,7 @@ fun GuessFlagScreen(
                 modifier = Modifier
             )
 
+            // show success alert when showSuccessAlert is true
             if (showSuccessAlert) {
                 AlertDialog(onDismissRequest = { showSuccessAlert = false },
                     text = { Text(
@@ -158,6 +194,7 @@ fun GuessFlagScreen(
                     })
             }
 
+            // show error alert when showErrorAlert is true
             if (showErrorAlert) {
                 AlertDialog(
                     onDismissRequest = { showErrorAlert = false },
@@ -190,6 +227,13 @@ fun GuessFlagScreen(
 private fun PreviewGuessFlagScreen() {
     GuessFlagScreen(
         modifier = Modifier,
-        countries = listOf(Country(name = "Sri Lanka", code = "lk"))
+        countries = listOf(Country(name = "Sri Lanka", code = "lk")),
+        isChecked = false,
     )
 }
+
+/*
+* Ayushpan. CountDownTimer in Android using Kotlin. GeeksforGeeks. Available from https://www.geeksforgeeks.org/countdowntimer-in-android-using-kotlin/ [Accessed on 02 April 2024]
+*
+* Google developers. CountDownTimer. Developers Android. Available from https://developer.android.com/reference/kotlin/android/os/CountDownTimer [Accessed on 02 April 2024]
+* */

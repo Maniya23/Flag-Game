@@ -22,6 +22,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -40,7 +41,8 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun AdvancedLevel(
     modifier: Modifier = Modifier,
-    countries: List<Country>
+    countries: List<Country>,
+    isChecked: Boolean
 ) {
 
     // hold 3 random countries
@@ -74,6 +76,7 @@ fun AdvancedLevel(
     var showAnswer2 by remember { mutableStateOf(false) }
     var showAnswer3 by remember { mutableStateOf(false) }
 
+    var time by remember { mutableLongStateOf(10) }
 
     val textFieldColors1 = TextFieldDefaults.textFieldColors(
         textColor = textFieldColor1
@@ -103,7 +106,7 @@ fun AdvancedLevel(
                 showNext = true;
             }
 
-            // check if each country matches
+            // check if each country matches if yes disable text field
             else {
                 if (userInput1.lowercase()==randomCountry1.name.lowercase()){
                     textFieldColor1 = Color.Green;
@@ -157,6 +160,7 @@ fun AdvancedLevel(
             points+=1;
     }
 
+    // Show incorrect Answers
     fun showAnswers(){
         if (userInput1.lowercase() != randomCountry1.name.lowercase())
             showAnswer1 = true;
@@ -166,13 +170,14 @@ fun AdvancedLevel(
             showAnswer3 = true;
     }
 
+    // Hide all answers
     fun hideAnswers(){
         showAnswer1 = false;
         showAnswer2 = false;
         showAnswer3 = false;
     }
 
-
+    // Start of display
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -185,6 +190,27 @@ fun AdvancedLevel(
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(30.dp))
+
+        Row {
+            if (isChecked){
+                Text(text = "Time remaining : $time s")
+
+//                // referred from Kotlin Documentation & GeeksforGeeks referenced at the end
+//                object : CountDownTimer(10000, 1000) {
+//
+//                    override fun onTick(millisUntilFinished: Long) {
+//                        time = millisUntilFinished;
+//                        time/=1000;
+//                    }
+//
+//
+//                    override fun onFinish() {
+//                        showErrorAlert = true;
+//                        showNext = true;
+//                    }
+//                }.start()
+            }
+        }
 
         Row {
             Text(
@@ -234,7 +260,7 @@ fun AdvancedLevel(
             TextField(
                 value = userInput1,
                 onValueChange = { userInput1 = it },
-                label = { Text("Enter your guess:") },
+                label = { Text("Enter flag 1:") },
                 modifier = Modifier.fillMaxWidth(),
                 colors = textFieldColors1,
                 enabled = enableTextField1,
@@ -255,7 +281,7 @@ fun AdvancedLevel(
             TextField(
                 value = userInput2,
                 onValueChange = { userInput2 = it },
-                label = { Text("Enter your guess:") },
+                label = { Text("Enter flag 2:") },
                 modifier = Modifier.fillMaxWidth(),
                 enabled = enableTextField2,
             )
@@ -274,7 +300,7 @@ fun AdvancedLevel(
             TextField(
                 value = userInput3,
                 onValueChange = { userInput3 = it },
-                label = { Text("Enter your guess:") },
+                label = { Text("Enter flag 3:") },
                 modifier = Modifier.fillMaxWidth(),
                 enabled = enableTextField3,
             )
@@ -383,6 +409,13 @@ fun AdvancedLevel(
 private fun PreviewAdvanceLevel() {
     AdvancedLevel(
         modifier = Modifier,
-        countries = listOf(Country(name = "Sri Lanka", code = "lk"))
+        countries = listOf(Country(name = "Sri Lanka", code = "lk")),
+        isChecked = false,
     )
 }
+
+/*
+* Ayushpan. CountDownTimer in Android using Kotlin. GeeksforGeeks. Available from https://www.geeksforgeeks.org/countdowntimer-in-android-using-kotlin/ [Accessed on 02 April 2024]
+*
+* Google developers. CountDownTimer. Developers Android. Available from https://developer.android.com/reference/kotlin/android/os/CountDownTimer [Accessed on 02 April 2024]
+* */

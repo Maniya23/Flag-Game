@@ -21,6 +21,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -45,11 +46,14 @@ fun GuessHintsScreen(
     // Store context
     val context = LocalContext.current
 
-    //
+    //store Alerts, number of incorrect characters and answers visible state
     var incorrectNumber by remember { mutableIntStateOf(0) }
     var showSuccessAlert by remember { mutableStateOf(false) }
     var showNext by remember { mutableStateOf(false) }
     var showErrorAlert by remember { mutableStateOf(false) }
+    var showAnswer by remember { mutableStateOf(false) }
+
+    var time by remember { mutableLongStateOf(10) }
 
     // State to keep random country
     var randomCountry by remember { mutableStateOf(countries.random()) }
@@ -82,6 +86,7 @@ fun GuessHintsScreen(
             showSuccessAlert = true;
             showNext = true;
         } else {
+            showAnswer = true;
             showErrorAlert = true;
             showNext = true;
             Log.d("GuessHintsScreen", "Incorrect guess")
@@ -98,6 +103,7 @@ fun GuessHintsScreen(
         }
     }
 
+    //Start of display
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -110,6 +116,27 @@ fun GuessHintsScreen(
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(16.dp))
+        Row {
+            if (isChecked){
+                Text(text = "Time remaining : $time s")
+
+//                // referred from Kotlin Documentation & GeeksforGeeks referenced at the end
+//                object : CountDownTimer(10000, 1000) {
+//
+//                    override fun onTick(millisUntilFinished: Long) {
+//                        time = millisUntilFinished;
+//                        time/=1000;
+//                    }
+//
+//
+//                    override fun onFinish() {
+//                        showErrorAlert = true;
+//                        showNext = true;
+//                    }
+//                }.start()
+            }
+        }
+
         Row(
             modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center
         ) {
@@ -123,12 +150,13 @@ fun GuessHintsScreen(
             )
         }
         Spacer(modifier = Modifier.height(32.dp))
+
+        // Text box and function to handle when wrong character input
         TextField(
             value = userInput,
             onValueChange = { userInput = it
                 if (!randomCountry.name.lowercase().contains(it.lowercase())){
                     incorrectUserInput();
-
                 }},
             label = { Text("Enter your guess:") },
             modifier = Modifier.fillMaxWidth()
@@ -143,6 +171,7 @@ fun GuessHintsScreen(
                 "Submit",
             onClick = {
                 if (showNext){
+                    showAnswer = false;
                     randomCountry = countries.random();
                     showNext = false;
                     userInput = "";
@@ -217,8 +246,8 @@ fun GuessHintsScreen(
             )
         }
         Row {
-            // When show next button is active, refresh variables
-            if (showNext) {
+            // if answer is wrong show correct answer
+            if (showAnswer){
                 Text(
                     randomCountry.name,
                     modifier = Modifier.weight(1f),
@@ -226,12 +255,16 @@ fun GuessHintsScreen(
                     style = TextStyle(fontSize = 24.sp),
                     color = Color.Blue
                 )
-                userInput = "";
-                result = "";
-                incorrectNumber = 0;
             }
-
         }
+
+        // When show next button is active, refresh variables
+        if (showNext) {
+            userInput = "";
+            result = "";
+            incorrectNumber = 0;
+        }
+
         Spacer(modifier = Modifier.height(16.dp))
         Row(
             modifier = Modifier.fillMaxWidth()
@@ -241,13 +274,13 @@ fun GuessHintsScreen(
                     getDashedString()
                 else
                     result,
-                modifier = Modifier.weight(1f),
-                textAlign = TextAlign.Center,
-                style = TextStyle(
-                    fontSize = 26.sp,
-                    letterSpacing = 22.sp,
-                    fontWeight = FontWeight.Bold
-                )
+                    modifier = Modifier.weight(1f),
+                    textAlign = TextAlign.Center,
+                    style = TextStyle(
+                        fontSize = 26.sp,
+                        letterSpacing = 22.sp,
+                        fontWeight = FontWeight.Bold
+                    )
             )
         }
     }
@@ -262,3 +295,9 @@ private fun PreviewGuessHintsScreen() {
         isChecked = false
     )
 }
+
+/*
+* Ayushpan. CountDownTimer in Android using Kotlin. GeeksforGeeks. Available from https://www.geeksforgeeks.org/countdowntimer-in-android-using-kotlin/ [Accessed on 02 April 2024]
+*
+* Google developers. CountDownTimer. Developers Android. Available from https://developer.android.com/reference/kotlin/android/os/CountDownTimer [Accessed on 02 April 2024]
+* */

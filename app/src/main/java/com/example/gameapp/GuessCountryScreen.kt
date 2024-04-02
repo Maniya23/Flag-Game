@@ -40,7 +40,7 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun GuessCountryScreen(
-    modifier: Modifier, navController: NavController,
+    modifier: Modifier,
     countries: List<Country>,
     timer: Int,
     isChecked: Boolean,
@@ -54,8 +54,7 @@ fun GuessCountryScreen(
     // Get a random country from country list
     var randomCountry by remember { mutableStateOf(countries.random()) }
     
-    var time by remember { mutableLongStateOf(0) }
-    var timeEnable by remember { mutableStateOf(false) }
+    var time by remember { mutableLongStateOf(10) }
 
     // Get current context
     val context = LocalContext.current
@@ -63,7 +62,7 @@ fun GuessCountryScreen(
     //Get the flag path from drawables
     val randomCountryFlag = painterResource(id = getFlagResourceId(randomCountry.code, context))
 
-    timeEnable = isChecked
+    // Start of display
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -79,7 +78,7 @@ fun GuessCountryScreen(
         Spacer(modifier = Modifier.height(10.dp))
         Row {
             if (isChecked){
-                Text(text = "Time remaining : $time")
+                Text(text = "Time remaining : $time s")
 
 //                // referred from Kotlin Documentation & GeeksforGeeks referenced at the end
 //                object : CountDownTimer(10000, 1000) {
@@ -97,7 +96,9 @@ fun GuessCountryScreen(
 //                }.start()
             }
         }
-        if (showNext){
+
+        //  show correct country if showNext is enabled and selected country is wrong
+        if (showNext && selectedCountry!=randomCountry){
 //            isChecked=false;
             Text(
                 modifier = Modifier.fillMaxWidth(),
@@ -121,6 +122,7 @@ fun GuessCountryScreen(
         }
         Spacer(modifier = Modifier.height(20.dp))
 
+        // Country list
         Row(modifier = Modifier.height(400.dp)) {
             LazyColumn {
                 items(countries) { country ->
@@ -169,6 +171,8 @@ fun GuessCountryScreen(
             )
         }
         Spacer(modifier = Modifier.height(16.dp))
+
+        // show success alert when showSuccessAlert is true
         if (showSuccessAlert) {
             AlertDialog(onDismissRequest = { showSuccessAlert = false },
                 text = { Text(
@@ -191,6 +195,7 @@ fun GuessCountryScreen(
                 })
         }
 
+        // show error alert when showErrorAlert is true
         if (showErrorAlert) {
             AlertDialog(onDismissRequest = { showErrorAlert = false },
                 text = { Text(
@@ -218,10 +223,8 @@ fun GuessCountryScreen(
 @Preview(name = "GuessCountryScreen")
 @Composable
 private fun PreviewGuessCountryScreen() {
-    val navController = rememberNavController()
     GuessCountryScreen(
         modifier = Modifier,
-        navController = navController,
         countries = listOf(Country(name = "Sri Lanka", code = "lk")),
         timer = 0,
         isChecked = false,

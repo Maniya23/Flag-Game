@@ -44,7 +44,6 @@ class MainActivity : ComponentActivity() {
                 composable("GuessCountryScreen") {
                     GuessCountryScreen(
                         modifier = Modifier,
-                        navController,
                         countries,
                         timer,
                         isChecked,
@@ -55,14 +54,22 @@ class MainActivity : ComponentActivity() {
                   GuessHintsScreen(
                       modifier = Modifier,
                       countries,
-                      isChecked
+                      isChecked,
                   )
                 }
                 composable("GuessFlagScreen") {
-                    GuessFlagScreen(modifier = Modifier, countries)
+                    GuessFlagScreen(
+                        modifier = Modifier,
+                        countries,
+                        isChecked,
+                    )
                 }
                 composable("AdvancedLevel") {
-                    AdvancedLevel(modifier = Modifier, countries)
+                    AdvancedLevel(
+                        modifier = Modifier,
+                        countries,
+                        isChecked,
+                    )
                 }
             }
         }

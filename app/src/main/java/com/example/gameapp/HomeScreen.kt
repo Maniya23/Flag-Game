@@ -38,6 +38,7 @@ fun HomeScreen(
 ) {
 
 
+    // Start of display
     Column(
         modifier = Modifier
             .fillMaxSize()
