@@ -123,7 +123,7 @@ fun GuessCountryScreen(
         Spacer(modifier = Modifier.height(20.dp))
 
         // Country list
-        Row(modifier = Modifier.height(400.dp)) {
+        Row(modifier = Modifier.height(370.dp)) {
             LazyColumn {
                 items(countries) { country ->
                     Row(
@@ -197,7 +197,8 @@ fun GuessCountryScreen(
 
         // show error alert when showErrorAlert is true
         if (showErrorAlert) {
-            AlertDialog(onDismissRequest = { showErrorAlert = false },
+            AlertDialog(
+                onDismissRequest = { showErrorAlert = false },
                 text = { Text(
                     text = "Wrong",
                     style = TextStyle(
@@ -215,7 +216,8 @@ fun GuessCountryScreen(
                     ) {
                         Text("OK")
                     }
-                })
+                }
+            )
         }
     }
 }

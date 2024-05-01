@@ -37,7 +37,6 @@ fun HomeScreen(
     onChangeCheck: ()->Unit
 ) {
 
-
     // Start of display
     Column(
         modifier = Modifier
